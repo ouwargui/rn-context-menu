@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "rn-context-menu": ["../src/index"],
+      "rn-context-menu/*": ["../src/*"]
+    }
+  }
+}
