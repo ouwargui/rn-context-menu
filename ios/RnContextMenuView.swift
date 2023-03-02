@@ -3,6 +3,9 @@ import ExpoModulesCore
 // This view will be used as a native component. Make sure to inherit from `ExpoView`
 // to apply the proper styling (e.g. border radius and shadows).
 class RnContextMenuView: ExpoView {
+  var contextMenuTitle: String?
+  let onPressActionItem = EventDispatcher()
+
   required init(appContext: AppContext? = nil) {
     super.init(appContext: appContext)
     clipsToBounds = true
@@ -34,16 +37,16 @@ extension RnContextMenuView: UIContextMenuInteractionDelegate {
   {
     return UIContextMenuConfiguration(
       identifier: nil,
-      previewProvider: makeRatePreview,
+      previewProvider: makePreview,
       actionProvider: { _ in
-        let removeRating = self.makeRemoveRatingAction()
-        let rateMenu = self.makeRateMenu()
-        let children = [rateMenu, removeRating]
-        return UIMenu(title: "", children: children)
+        let action = self.makeAction()
+        let menu = self.makeMenu()
+        let children = [menu, action]
+        return UIMenu(title: self.contextMenuTitle ?? "", children: children)
       })
   }
 
-  func makeRatePreview() -> UIViewController {
+  func makePreview() -> UIViewController {
     let viewController = UIViewController()
 
     // 1
@@ -60,7 +63,7 @@ extension RnContextMenuView: UIContextMenuInteractionDelegate {
     return viewController
   }
 
-  func makeRemoveRatingAction() -> UIAction {
+  func makeAction() -> UIAction {
     // 1
     let removeRatingAttributes = UIMenuElement.Attributes.destructive
 
@@ -77,7 +80,7 @@ extension RnContextMenuView: UIContextMenuInteractionDelegate {
       }
   }
 
-  func makeRateMenu() -> UIMenu {
+  func makeMenu() -> UIMenu {
     let ratingButtonTitles = ["Boring", "Meh", "It's OK", "Like It", "Fantastic!"]
 
     let rateActions = ratingButtonTitles
@@ -101,5 +104,8 @@ extension RnContextMenuView: UIContextMenuInteractionDelegate {
       return
     }
     print("updated with \(number)")
+    onPressActionItem([
+      "identifier": number
+    ])
   }
 }

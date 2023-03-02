@@ -7,6 +7,12 @@ public class RnContextMenuModule: Module {
   public func definition() -> ModuleDefinition {
     Name("RnContextMenuView")
 
-    View(RnContextMenuView.self) {}
+    View(RnContextMenuView.self) {
+      Events("onPressActionItem")
+
+      Prop("title") { (view, title: String) in
+        view.contextMenuTitle = title
+      }
+    }
   }
 }

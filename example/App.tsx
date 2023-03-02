@@ -4,7 +4,12 @@ import { RnContextMenu } from "rn-context-menu";
 export default function App() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "purple" }}>
-      <RnContextMenu title="Hello World">
+      <RnContextMenu
+        title="Hello World"
+        onPressActionItem={(e) =>
+          console.log("button clicked: ", e.nativeEvent.identifier)
+        }
+      >
         <View
           style={{
             alignSelf: "center",
