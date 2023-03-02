@@ -1,7 +1,7 @@
 {
   "name": "rn-context-menu",
   "version": "0.1.0",
-  "description": "A context menu view wrapper wrapper for React Native",
+  "description": "A context menu view wrapper for React Native",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -12,14 +12,15 @@
     "prepare": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module",
-    "open:ios": "open -a \"Xcode\" example/ios",
-    "open:android": "open -a \"Android Studio\" example/android"
+    "open:ios": "open -a \"Xcode\" example/ios"
   },
   "keywords": [
     "react-native",
     "expo",
     "rn-context-menu",
-    "RnContextMenu"
+    "RnContextMenu",
+    "react-native-context-menu",
+    "context-menu"
   ],
   "repository": "https://github.com/ouwargui/rn-context-menu",
   "bugs": {

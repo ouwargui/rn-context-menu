@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { SafeAreaView, Text, View } from "react-native";
 import { RnContextMenu } from "rn-context-menu";
 
 export default function App() {
+  const [identifier, setIdentifier] = useState<string | undefined>(undefined);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "purple" }}>
       <RnContextMenu
         onItemPress={(event) => {
-          console.log(event.nativeEvent.identifier);
+          setIdentifier(event.nativeEvent.identifier);
         }}
         options={{
           title: "Text Context Menu",
@@ -60,6 +63,14 @@ export default function App() {
           <Text style={{ backgroundColor: "#fff" }}>teste1</Text>
         </View>
       </RnContextMenu>
+      <Text
+        style={{
+          alignSelf: "center",
+          marginTop: 200,
+          color: "white",
+          fontSize: 28,
+        }}
+      >{`button identifier: ${identifier}`}</Text>
     </SafeAreaView>
   );
 }
