@@ -8,10 +8,10 @@ public class RnContextMenuModule: Module {
     Name("RnContextMenuView")
 
     View(RnContextMenuView.self) {
-      Events("onPressActionItem")
+      Events("onItemPress")
 
-      Prop("title") { (view, title: String) in
-        view.contextMenuTitle = title
+      Prop("options") { (view, options: RnContextMenuOptions) in
+        view.contextMenuOptions = options
       }
     }
   }

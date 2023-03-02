@@ -3,8 +3,8 @@ import ExpoModulesCore
 // This view will be used as a native component. Make sure to inherit from `ExpoView`
 // to apply the proper styling (e.g. border radius and shadows).
 class RnContextMenuView: ExpoView {
-  var contextMenuTitle: String?
-  let onPressActionItem = EventDispatcher()
+  var contextMenuOptions: RnContextMenuOptions?
+  let onItemPress = EventDispatcher()
 
   required init(appContext: AppContext? = nil) {
     super.init(appContext: appContext)
@@ -37,75 +37,83 @@ extension RnContextMenuView: UIContextMenuInteractionDelegate {
   {
     return UIContextMenuConfiguration(
       identifier: nil,
-      previewProvider: makePreview,
+      previewProvider: nil,
       actionProvider: { _ in
-        let action = self.makeAction()
-        let menu = self.makeMenu()
-        let children = [menu, action]
-        return UIMenu(title: self.contextMenuTitle ?? "", children: children)
+        let action = self.makeActions()
+        let menu = self.makeMenus()
+        var children: [UIMenuElement] = []
+        children.append(contentsOf: menu)
+        children.append(contentsOf: action)
+        return UIMenu(title: self.contextMenuOptions?.title ?? "", children: children)
       })
   }
 
-  func makePreview() -> UIViewController {
-    let viewController = UIViewController()
+  func actionFactory(title: String?, image: String?, identifier: String?, attribute: UIMenuElement.Attributes?) -> UIAction {
+    let title = title ?? "No Title"
+    let image = image ?? ""
+    let identifier = identifier ?? ""
+    if let attribute = attribute {
+      return UIAction(
+        title: title,
+        image: UIImage(systemName: image),
+        identifier: UIAction.Identifier(rawValue: identifier),
+        attributes: attribute) { action in
+          self.onItemPress([
+            "identifier": action.identifier.rawValue
+          ])
+        }
+    }
 
-    // 1
-    let imageView = UIImageView(image: UIImage(systemName: "circle.fill"))
-    viewController.view = imageView
-
-    // 2
-    imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-    imageView.translatesAutoresizingMaskIntoConstraints = false
-
-    // 3
-    viewController.preferredContentSize = imageView.frame.size
-
-    return viewController
-  }
-
-  func makeAction() -> UIAction {
-    // 1
-    let removeRatingAttributes = UIMenuElement.Attributes.destructive
-
-    // 3
-    let deleteImage = UIImage(systemName: "delete.left")
-
-    // 4
     return UIAction(
-      title: "Remove rating",
-      image: deleteImage,
-      identifier: nil,
-      attributes: removeRatingAttributes) { _ in
-        print("removed")
+      title: title,
+      image: UIImage(systemName: image),
+      identifier: UIAction.Identifier(rawValue: identifier)) { action in
+        self.onItemPress([
+          "identifier": action.identifier.rawValue
+        ])
       }
   }
 
-  func makeMenu() -> UIMenu {
-    let ratingButtonTitles = ["Boring", "Meh", "It's OK", "Like It", "Fantastic!"]
+  func makeActions() -> [UIAction] {
+    guard let contextMenuOptions = contextMenuOptions else { return [] }
 
-    let rateActions = ratingButtonTitles
-      .enumerated()
-      .map { index, title in
-        UIAction(
-          title: title,
-          identifier: UIAction.Identifier("\(index + 1)"),
-          handler: updateRating)
-      }
+    let actions: [UIAction] = contextMenuOptions.actions.map { menuAction in
+      actionFactory(
+        title: menuAction.title,
+        image: menuAction.image,
+        identifier: menuAction.identifier,
+        attribute: menuAction.attribute?.toUIMenuElementAttributes())
+    }
+
+    return actions
+  }
+
+  func menuFactory(title: String?, image: String?, options: UIMenu.Options?, children: [UIAction]) -> UIMenu {
+    let title = title ?? "No Title"
+    let image = image ?? ""
+    let options = options ?? []
 
     return UIMenu(
-      title: "Rate...",
-      image: UIImage(systemName: "star.circle"),
-      options: .displayInline,
-      children: rateActions)
+      title: title,
+      image: UIImage(systemName: image),
+      options: options,
+      children: children)
   }
 
-  func updateRating(from action: UIAction) {
-    guard let number = Int(action.identifier.rawValue) else {
-      return
+  func makeMenus() -> [UIMenu] {
+    guard let contextMenuOptions = contextMenuOptions else { return [] }
+
+    let menus: [UIMenu] = contextMenuOptions.menus.map { menu in
+      let actions = menu.children.map { action in
+        actionFactory(
+          title: action.title,
+          image: action.image,
+          identifier: action.identifier,
+          attribute: action.attribute?.toUIMenuElementAttributes())
+      }
+      return menuFactory(title: menu.title, image: menu.image, options: menu.options?.toUIMenuOptions(), children: actions)
     }
-    print("updated with \(number)")
-    onPressActionItem([
-      "identifier": number
-    ])
+
+    return menus
   }
 }

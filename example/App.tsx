@@ -5,16 +5,56 @@ export default function App() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "purple" }}>
       <RnContextMenu
-        title="Hello World"
-        onPressActionItem={(e) =>
-          console.log("button clicked: ", e.nativeEvent.identifier)
-        }
+        onItemPress={(event) => {
+          console.log(event.nativeEvent.identifier);
+        }}
+        options={{
+          title: "Text Context Menu",
+          menus: [
+            {
+              title: "Options",
+              image: "gear.circle.fill",
+              options: "displayInline",
+              children: [
+                {
+                  title: "Option 1",
+                  identifier: "opt1",
+                },
+                {
+                  title: "Option 2",
+                  identifier: "opt2",
+                },
+                {
+                  title: "Option 3",
+                  identifier: "opt3",
+                  attribute: "destructive",
+                  image: "x.circle.fill",
+                },
+              ],
+            },
+          ],
+          actions: [
+            {
+              title: "Favorite",
+              identifier: "fav",
+              image: "star.fill",
+            },
+            {
+              title: "Remove",
+              identifier: "del",
+              image: "x.circle.fill",
+              attribute: "destructive",
+            },
+          ],
+        }}
       >
         <View
           style={{
             alignSelf: "center",
             justifyContent: "center",
             alignItems: "center",
+            backgroundColor: "pink",
+            padding: 50,
           }}
         >
           <Text style={{ backgroundColor: "#fff" }}>teste1</Text>
