@@ -11,6 +11,8 @@ https://user-images.githubusercontent.com/44242141/222493265-c7a8550e-959a-4ef4-
 ```
 npm install rn-context-menu
 yarn add rn-context-menu
+
+cd ios && pod install
 ```
 ### Configure for iOS
 Run `npx pod-install` after installing the npm package.
