@@ -14,9 +14,6 @@ yarn add rn-context-menu
 
 cd ios && pod install
 ```
-### Configure for iOS
-Run `npx pod-install` after installing the npm package.
-
 
 # API documentation
 
